@@ -9,6 +9,7 @@ import {
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
+import { PrismMaterial } from './materials/PrismMaterial'
 import { gltfLoader } from './loaders'
 
 class App {
@@ -72,6 +73,8 @@ class App {
   #update() {
     const elapsed = this.clock.getElapsedTime()
 
+    this.savePoint.children[0].rotation.y = elapsed * 0.45
+
     this.simulation?.update()
   }
 
@@ -109,6 +112,8 @@ class App {
     const gltf = await gltfLoader.load('/save-point.glb')
 
     this.savePoint = gltf.scene.children[0]
+
+    this.savePoint.children[0].material = PrismMaterial
 
     this.scene.add(this.savePoint)
   }
