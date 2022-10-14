@@ -50,6 +50,7 @@ export class Debug {
     const mesh = this.app.scene.getObjectByName('Base')
 
     this.#createColorUniformControl(mesh, folder, 'u_Color')
+    folder.addInput(mesh.material.uniforms.u_Opacity, 'value', { label: 'Opacity', min: 0, max: 1 })
   }
 
   #createPrismConfig() {

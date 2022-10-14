@@ -17,6 +17,7 @@
     "cannon-es-debugger": "^1.0.0",
     "stats.js": "^0.17.0",
     "three": "^0.145.0",
+    "three-instanced-uniforms-mesh": "^0.46.0",
     "tweakpane": "^3.1.0"
   }
 }

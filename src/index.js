@@ -4,10 +4,13 @@ import {
   PerspectiveCamera,
   Clock,
   Vector2,
-  Vector3
+  Vector3,
+  Matrix4,
 } from 'three'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+
+import { InstancedUniformsMesh } from 'three-instanced-uniforms-mesh'
 
 import { BaseMaterial } from './materials/BaseMaterial'
 import { PrismMaterial } from './materials/PrismMaterial'
@@ -114,13 +117,29 @@ class App {
    */
   async #loadModel() {
     const gltf = await gltfLoader.load('/save-point.glb')
+    const mat4 = new Matrix4()
 
-    this.savePoint = gltf.scene.children[0]
+    // Base
+    this.savePoint = new InstancedUniformsMesh(gltf.scene.children[0].geometry, BaseMaterial, BaseMaterial.defines.NUM_INSTANCES)
+    this.savePoint.name = 'Base'
 
-    this.savePoint.material = BaseMaterial
-    this.savePoint.children[0].material = PrismMaterial
-    this.savePoint.children[1].material = TopMaterial
+    for (let i = 0; i < this.savePoint.count; i++) {
+      this.savePoint.setMatrixAt(i, mat4.identity())
+      this.savePoint.setUniformAt('u_Index', i, i)
+    }
 
+    // Prism
+    const prism = gltf.scene.getObjectByName('Prism')
+    prism.material = PrismMaterial
+
+    // Top
+    const top = gltf.scene.getObjectByName('Top')
+    top.material = TopMaterial
+
+    // Set children
+    this.savePoint.add(prism, top)
+
+    // Add to scene
     this.scene.add(this.savePoint)
   }
 
