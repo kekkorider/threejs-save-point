@@ -14,6 +14,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { InstancedUniformsMesh } from 'three-instanced-uniforms-mesh'
+import { BloomEffect, EffectComposer, EffectPass, RenderPass } from  'postprocessing'
 
 import { BaseMaterial } from './materials/BaseMaterial'
 import { PrismMaterial } from './materials/PrismMaterial'
@@ -55,6 +56,8 @@ class App {
     await this.#loadModel()
     this.#createParticles()
 
+    this.#createPostprocess()
+
     if (this.hasDebug) {
       const { Debug } = await import('./Debug.js')
       new Debug(this)
@@ -94,7 +97,7 @@ class App {
   }
 
   #render() {
-    this.renderer.render(this.scene, this.camera)
+    this.composer.render()
   }
 
   #createScene() {
@@ -108,8 +111,11 @@ class App {
 
   #createRenderer() {
     this.renderer = new WebGLRenderer({
+      powerPreference: 'high-performance',
       alpha: true,
-      antialias: window.devicePixelRatio === 1
+      antialias: false,
+      stencil: false,
+      depth: false
     })
 
     this.container.appendChild(this.renderer.domElement)
@@ -118,6 +124,23 @@ class App {
     this.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio))
     this.renderer.setClearColor(0x121212)
     this.renderer.physicallyCorrectLights = false
+  }
+
+  #createPostprocess() {
+    this.composer = new EffectComposer(this.renderer)
+
+    this.passes = {}
+
+    const renderPass = new RenderPass(this.scene, this.camera)
+    this.composer.addPass(renderPass)
+    Object.assign(this.passes, { renderPass })
+
+    {
+      const effect = new BloomEffect({ intensity: 3, luminanceThreshold: 0.7, luminanceSmoothing: 0.663 })
+      const bloomPass = new EffectPass(this.camera, effect)
+      this.composer.addPass(bloomPass)
+      Object.assign(this.passes, { bloomPass })
+    }
   }
 
   /**

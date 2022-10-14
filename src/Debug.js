@@ -12,6 +12,7 @@ export class Debug {
     this.#createPrismConfig()
     this.#createTopConfig()
     this.#createParticlesConfig()
+    this.#createPostprocessConfig()
   }
 
   refresh() {
@@ -79,6 +80,19 @@ export class Debug {
 
     this.#createColorUniformControl(mesh, folder, 'u_ColorA' , 'Color A')
     this.#createColorUniformControl(mesh, folder, 'u_ColorB' , 'Color B')
+  }
+
+  #createPostprocessConfig() {
+    const folder = this.pane.addFolder({ title: 'Postprocess' })
+    const { bloomPass, vignettePass } = this.app.passes
+
+    folder.addInput(bloomPass.effects[0], 'intensity', { label: 'Bloom Intensity', min: 0, max: 5 })
+    folder.addInput(bloomPass.effects[0].luminanceMaterial, 'threshold', { label: 'Bloom threshold', min: 0, max: 1 })
+    folder.addInput(bloomPass.effects[0].luminanceMaterial, 'smoothing', { label: 'Bloom smoothing', min: 0, max: 1 })
+    // folder.addInput(bloomPass, 'radius', { label: 'Bloom Radius', min: 0, max: 1 })
+    // folder.addInput(bloomPass, 'threshold', { label: 'Bloom Threshold', min: 0, max: 1 })
+    // folder.addInput(vignettePass, 'offset', { label: 'Vignette Offset', min: 0, max: 1 })
+    // folder.addInput(vignettePass, 'darkness', { label: 'Vignette Darkness', min: 0, max: 1 })
   }
 
   /**
