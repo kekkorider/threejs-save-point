@@ -6,6 +6,9 @@ import {
   Vector2,
   Vector3,
   Matrix4,
+  Points,
+  BufferGeometry,
+  BufferAttribute
 } from 'three'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -15,6 +18,8 @@ import { InstancedUniformsMesh } from 'three-instanced-uniforms-mesh'
 import { BaseMaterial } from './materials/BaseMaterial'
 import { PrismMaterial } from './materials/PrismMaterial'
 import { TopMaterial } from './materials/TopMaterial'
+import { ParticlesMaterial } from './materials/ParticlesMaterial'
+
 import { gltfLoader } from './loaders'
 
 class App {
@@ -48,6 +53,7 @@ class App {
     this.#createControls()
 
     await this.#loadModel()
+    this.#createParticles()
 
     if (this.hasDebug) {
       const { Debug } = await import('./Debug.js')
@@ -78,9 +84,11 @@ class App {
   #update() {
     const elapsed = this.clock.getElapsedTime()
 
-    this.savePoint.material.uniforms.u_Time.value = elapsed * 0.45
+    this.savePoint.material.uniforms.u_Time.value = elapsed
     this.savePoint.children[0].rotation.y = elapsed * 0.45
     this.savePoint.children[1].rotation.y = elapsed * 0.88
+
+    this.particles.material.uniforms.u_Time.value = elapsed
 
     this.simulation?.update()
   }
@@ -141,6 +149,42 @@ class App {
 
     // Add to scene
     this.scene.add(this.savePoint)
+  }
+
+  #createParticles() {
+    const geometry = new BufferGeometry()
+    const count = 30
+
+    // `position` attribute
+    {
+      const array = new Float32Array(count * 3)
+
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2
+
+        array[i * 3 + 0] = Math.cos(a) * (0.5 + Math.random()*0.85)
+        array[i * 3 + 1] = Math.random()
+        array[i * 3 + 2] = Math.sin(a) * (0.5 + Math.random()*0.85)
+      }
+
+      geometry.setAttribute('position', new BufferAttribute(array, 3))
+    }
+
+    // `a_Random` attribute
+    {
+      const array = new Float32Array(count)
+
+      for (let i = 0; i < count; i++) {
+        array[i] = Math.random()
+      }
+
+      geometry.setAttribute('a_Random', new BufferAttribute(array, 1))
+    }
+
+    this.particles = new Points(geometry, ParticlesMaterial)
+    this.particles.name = 'Particles'
+
+    this.scene.add(this.particles)
   }
 
   #createControls() {

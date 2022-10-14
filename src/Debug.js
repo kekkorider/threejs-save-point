@@ -11,6 +11,7 @@ export class Debug {
     this.#createBaseConfig()
     this.#createPrismConfig()
     this.#createTopConfig()
+    this.#createParticlesConfig()
   }
 
   refresh() {
@@ -70,6 +71,14 @@ export class Debug {
 
     folder.addInput(mesh.material.uniforms.u_LightFalloff, 'value', { label: 'Light Falloff', min: 0, max: 15 })
     folder.addInput(mesh.material.uniforms.u_LightStrength, 'value', { label: 'Light Strength', min: 0, max: 2 })
+  }
+
+  #createParticlesConfig() {
+    const folder = this.pane.addFolder({ title: 'Particles' })
+    const mesh = this.app.scene.getObjectByName('Particles')
+
+    this.#createColorUniformControl(mesh, folder, 'u_ColorA' , 'Color A')
+    this.#createColorUniformControl(mesh, folder, 'u_ColorB' , 'Color B')
   }
 
   /**
