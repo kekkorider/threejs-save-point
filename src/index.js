@@ -9,6 +9,7 @@ import {
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
+import { BaseMaterial } from './materials/BaseMaterial'
 import { PrismMaterial } from './materials/PrismMaterial'
 import { gltfLoader } from './loaders'
 
@@ -73,6 +74,7 @@ class App {
   #update() {
     const elapsed = this.clock.getElapsedTime()
 
+    this.savePoint.material.uniforms.u_Time.value = elapsed * 0.45
     this.savePoint.children[0].rotation.y = elapsed * 0.45
 
     this.simulation?.update()
@@ -113,6 +115,7 @@ class App {
 
     this.savePoint = gltf.scene.children[0]
 
+    this.savePoint.material = BaseMaterial
     this.savePoint.children[0].material = PrismMaterial
 
     this.scene.add(this.savePoint)

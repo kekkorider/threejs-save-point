@@ -8,6 +8,7 @@ export class Debug {
     this.#createPanel()
     this.#createSceneConfig()
     this.#createPhysicsConfig()
+    this.#createBaseConfig()
     this.#createPrismConfig()
   }
 
@@ -41,6 +42,13 @@ export class Debug {
     folder.addButton({ title: 'Toggle Debug' }).on('click', () => {
       window.dispatchEvent(new CustomEvent('togglePhysicsDebug'))
     })
+  }
+
+  #createBaseConfig() {
+    const folder = this.pane.addFolder({ title: 'Base' })
+    const mesh = this.app.scene.getObjectByName('Base')
+
+    this.#createColorUniformControl(mesh, folder, 'u_Color')
   }
 
   #createPrismConfig() {
