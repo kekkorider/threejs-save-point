@@ -214,6 +214,8 @@ class App {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.target = new Vector3(0, 2, 0)
     this.controls.update()
+
+    this.controls.enabled = this.hasDebug
   }
 
   #createClock() {
@@ -235,6 +237,7 @@ class App {
     this.camera.updateProjectionMatrix()
 
     this.renderer.setSize(this.screen.x, this.screen.y)
+    this.composer.setSize(this.screen.x, this.screen.y)
   }
 }
 
