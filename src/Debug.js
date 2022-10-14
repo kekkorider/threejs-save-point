@@ -10,6 +10,7 @@ export class Debug {
     this.#createPhysicsConfig()
     this.#createBaseConfig()
     this.#createPrismConfig()
+    this.#createTopConfig()
   }
 
   refresh() {
@@ -60,6 +61,14 @@ export class Debug {
     folder.addSeparator()
     folder.addInput(mesh.material.uniforms.u_FresnelFalloff, 'value', { label: 'Fresnel Falloff', min: 0, max: 5 })
     folder.addInput(mesh.material.uniforms.u_FresnelStrength, 'value', { label: 'Fresnel Strength', min: 0, max: 2 })
+  }
+
+  #createTopConfig() {
+    const folder = this.pane.addFolder({ title: 'Top' })
+    const mesh = this.app.scene.getObjectByName('Top')
+
+    folder.addInput(mesh.material.uniforms.u_LightFalloff, 'value', { label: 'Light Falloff', min: 0, max: 15 })
+    folder.addInput(mesh.material.uniforms.u_LightStrength, 'value', { label: 'Light Strength', min: 0, max: 2 })
   }
 
   /**

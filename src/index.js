@@ -11,6 +11,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { BaseMaterial } from './materials/BaseMaterial'
 import { PrismMaterial } from './materials/PrismMaterial'
+import { TopMaterial } from './materials/TopMaterial'
 import { gltfLoader } from './loaders'
 
 class App {
@@ -76,6 +77,7 @@ class App {
 
     this.savePoint.material.uniforms.u_Time.value = elapsed * 0.45
     this.savePoint.children[0].rotation.y = elapsed * 0.45
+    this.savePoint.children[1].rotation.y = elapsed * 0.88
 
     this.simulation?.update()
   }
@@ -90,7 +92,7 @@ class App {
 
   #createCamera() {
     this.camera = new PerspectiveCamera(75, this.screen.x / this.screen.y, 0.1, 100)
-    this.camera.position.set(0, 3, 5)
+    this.camera.position.set(0, 4, 5)
   }
 
   #createRenderer() {
@@ -117,6 +119,7 @@ class App {
 
     this.savePoint.material = BaseMaterial
     this.savePoint.children[0].material = PrismMaterial
+    this.savePoint.children[1].material = TopMaterial
 
     this.scene.add(this.savePoint)
   }
